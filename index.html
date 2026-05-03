@@ -9,37 +9,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
       --orange:      #e87020;
-      --orange-dim:  #7a3a0a;
+      --orange-dim:  #9a4e18;
       --orange-pale: #f5a55a;
       --white:       #f0ece4;
       --muted:       #6b6560;
       --border:      rgba(232,112,32,0.15);
     }
+
     html, body {
       width: 100%; height: 100%;
-      background: #0a0a0a;
+      background: #080808;
       color: var(--white);
       font-family: 'Outfit', sans-serif;
       overflow: hidden;
     }
+
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
+      min-height: 100vh;
     }
 
-    /* Grain */
+    /* ── Rich background — radial glow + grain ── */
     body::before {
       content: '';
       position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.04;
+      /* Subtle warm radial glow emanating from center */
+      background:
+        radial-gradient(ellipse 60% 55% at 50% 45%, rgba(232,112,32,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 80% at 50% 100%, rgba(120,50,10,0.12) 0%, transparent 60%),
+        #080808;
       pointer-events: none; z-index: 0;
     }
+
+
 
     /* ── Center block ── */
     .center {
@@ -48,17 +57,21 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
+      width: 100%;
+      padding: 0 20px;
     }
 
+    /* Title scales fluidly with viewport, not just width */
     .server-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(80px, 14vw, 130px);
+      /* vmin scales relative to the smaller dimension — works in fullscreen AND narrow */
+      font-size: clamp(72px, 16vmin, 160px);
       font-weight: 300;
       line-height: 0.88;
       letter-spacing: -0.02em;
       color: var(--white);
       opacity: 0;
-      animation: up 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
+      animation: up 1s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
     }
     .server-name .rp {
       font-style: italic;
@@ -66,51 +79,93 @@
     }
 
     .tagline {
-      font-size: 11px;
-      letter-spacing: 0.28em;
+      font-size: clamp(10px, 1.2vmin, 13px);
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-top: 20px;
+      margin-top: clamp(14px, 2.5vmin, 28px);
       opacity: 0;
       animation: up 0.9s ease 0.3s forwards;
     }
 
     .rule {
-      width: 340px;
-      max-width: 80vw;
+      width: clamp(260px, 36vmin, 500px);
       height: 1px;
       background: var(--border);
-      margin: 40px 0 32px;
+      margin: clamp(24px, 4vmin, 52px) 0 clamp(20px, 3.5vmin, 44px);
       opacity: 0;
       animation: up 0.9s ease 0.45s forwards;
     }
 
-    /* Progress */
+    /* ── Progress block ── */
     .status-block {
-      width: 340px;
-      max-width: 80vw;
+      width: clamp(260px, 36vmin, 480px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: clamp(8px, 1.2vmin, 14px);
       opacity: 0;
       animation: up 0.9s ease 0.55s forwards;
     }
+
     .status-row {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .status-text { font-size: 12px; font-weight: 300; color: var(--muted); letter-spacing: 0.03em; }
-    .file-count  { font-size: 12px; color: var(--orange-dim); }
-    .bar-track   { width: 100%; height: 2px; background: rgba(232,112,32,0.1); border-radius: 2px; overflow: hidden; }
-    .bar-fill    { height: 100%; width: 0%; background: var(--orange); border-radius: 2px; transition: width 0.35s ease; }
 
-    .meta-row { display: flex; gap: 20px; margin-top: 6px; justify-content: center; }
-    .meta-item { display: flex; align-items: center; gap: 6px; }
-    .meta-dot  { width: 4px; height: 4px; border-radius: 50%; background: var(--orange); opacity: 0.5; flex-shrink: 0; }
-    .meta-value { font-size: 11px; font-weight: 300; color: var(--muted); letter-spacing: 0.04em; }
+    .status-text {
+      font-size: clamp(11px, 1.3vmin, 13px);
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+    .file-count {
+      font-size: clamp(11px, 1.3vmin, 13px);
+      color: var(--orange-dim);
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(232,112,32,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--orange-dim), var(--orange));
+      border-radius: 2px;
+      transition: width 0.35s ease;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: clamp(12px, 2.5vmin, 28px);
+      margin-top: clamp(4px, 0.8vmin, 10px);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .meta-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--orange);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+    .meta-value {
+      font-size: clamp(10px, 1.1vmin, 12px);
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
 
     /* ── Music player ── */
     .player {
@@ -121,15 +176,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 14px 28px;
-      background: rgba(10,10,10,0.92);
+      padding: clamp(10px, 1.5vmin, 18px) clamp(20px, 3vw, 48px);
+      background: rgba(8,8,8,0.94);
       border-top: 1px solid rgba(232,112,32,0.12);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
       opacity: 0;
       animation: up 0.9s ease 0.8s forwards;
     }
 
-    /* Left: waveform + track info */
     .player-left {
       display: flex;
       align-items: center;
@@ -138,7 +192,6 @@
       flex: 1;
     }
 
-    /* Animated waveform bars */
     .waveform {
       display: flex;
       align-items: center;
@@ -153,10 +206,10 @@
       border-radius: 1px;
       opacity: 0.7;
     }
-    .waveform span:nth-child(1) { animation: wave 1.1s ease-in-out 0.0s infinite alternate; }
+    .waveform span:nth-child(1) { animation: wave 1.1s ease-in-out 0.00s infinite alternate; }
     .waveform span:nth-child(2) { animation: wave 1.1s ease-in-out 0.15s infinite alternate; }
-    .waveform span:nth-child(3) { animation: wave 1.1s ease-in-out 0.3s infinite alternate; }
-    .waveform span:nth-child(4) { animation: wave 1.1s ease-in-out 0.1s infinite alternate; }
+    .waveform span:nth-child(3) { animation: wave 1.1s ease-in-out 0.30s infinite alternate; }
+    .waveform span:nth-child(4) { animation: wave 1.1s ease-in-out 0.10s infinite alternate; }
     .waveform span:nth-child(5) { animation: wave 1.1s ease-in-out 0.25s infinite alternate; }
     .waveform.paused span { animation-play-state: paused; }
 
@@ -167,7 +220,7 @@
       min-width: 0;
     }
     .track-name {
-      font-size: 12px;
+      font-size: clamp(11px, 1.3vmin, 13px);
       font-weight: 400;
       color: var(--white);
       white-space: nowrap;
@@ -175,17 +228,16 @@
       text-overflow: ellipsis;
     }
     .track-hint {
-      font-size: 10px;
-      letter-spacing: 0.1em;
+      font-size: clamp(9px, 1vmin, 11px);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
-    /* Center: controls */
     .player-controls {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: clamp(10px, 2vmin, 20px);
       flex-shrink: 0;
     }
 
@@ -202,7 +254,7 @@
     }
     .ctrl-btn:hover { color: var(--white); }
     .ctrl-btn.play-btn {
-      width: 32px; height: 32px;
+      width: 34px; height: 34px;
       border-radius: 50%;
       border: 1px solid rgba(232,112,32,0.4);
       color: var(--orange);
@@ -212,7 +264,6 @@
       color: var(--orange-pale);
     }
 
-    /* Right: volume */
     .player-right {
       display: flex;
       align-items: center;
@@ -220,10 +271,11 @@
       flex-shrink: 0;
     }
     .vol-icon { color: var(--muted); display: flex; align-items: center; }
+
     input[type=range].vol-slider {
       -webkit-appearance: none;
       appearance: none;
-      width: 80px;
+      width: clamp(60px, 8vw, 100px);
       height: 2px;
       background: rgba(232,112,32,0.15);
       border-radius: 2px;
@@ -239,7 +291,7 @@
     }
 
     @keyframes up {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes wave {
@@ -272,7 +324,6 @@
 
   <!-- Music player bar -->
   <div class="player">
-
     <div class="player-left">
       <div class="waveform" id="waveform">
         <span></span><span></span><span></span><span></span><span></span>
@@ -284,15 +335,12 @@
     </div>
 
     <div class="player-controls">
-      <!-- Prev -->
       <button class="ctrl-btn" id="btn-prev" title="Previous">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <polygon points="13,1 5,7 13,13" fill="currentColor"/>
           <rect x="1" y="1" width="2" height="12" rx="1" fill="currentColor"/>
         </svg>
       </button>
-
-      <!-- Play/Pause -->
       <button class="ctrl-btn play-btn" id="btn-play" title="Play / Pause">
         <svg id="icon-play" width="12" height="14" viewBox="0 0 12 14" fill="none">
           <polygon points="0,0 12,7 0,14" fill="currentColor"/>
@@ -302,8 +350,6 @@
           <rect x="8" y="0" width="4" height="14" rx="1" fill="currentColor"/>
         </svg>
       </button>
-
-      <!-- Next -->
       <button class="ctrl-btn" id="btn-next" title="Next">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
           <polygon points="1,1 9,7 1,13" fill="currentColor"/>
@@ -321,7 +367,6 @@
       </span>
       <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.6">
     </div>
-
   </div>
 
   <audio id="audio" preload="auto"></audio>
@@ -329,7 +374,7 @@
   <script>
     /* ── PLAYLIST — add your tracks here ── */
     var playlist = [
-      { title: "Track 1", url: "music/track1.mp3" },
+      { title: "Track 1", url: "music/Jojee - Think Of Anything.mp3" },
       { title: "Track 2", url: "music/track2.mp3" },
       { title: "Track 3", url: "music/track3.mp3" }
     ];
@@ -343,8 +388,8 @@
     var iconPause = document.getElementById('icon-pause');
     var volSlider = document.getElementById('vol-slider');
 
-    var current   = 0;
-    var playing   = false;
+    var current = 0;
+    var playing = false;
 
     function loadTrack(idx) {
       if (!playlist.length) return;
@@ -357,8 +402,8 @@
 
     function setPlaying(state) {
       playing = state;
-      iconPlay.style.display  = state ? 'none'  : '';
-      iconPause.style.display = state ? ''      : 'none';
+      iconPlay.style.display  = state ? 'none' : '';
+      iconPause.style.display = state ? ''     : 'none';
       waveform.classList.toggle('paused', !state);
     }
 
@@ -393,17 +438,13 @@
       audio.volume = parseFloat(this.value);
     });
 
-    /* Init */
     audio.volume = parseFloat(volSlider.value);
     loadTrack(0);
 
-    /* Autoplay — GMod's Chromium usually allows it; fallback to click */
-    window.addEventListener('load', function() {
-      play();
-    });
+    window.addEventListener('load', function() { play(); });
 
     /* ── GMod hooks ── */
-    var totalFiles = 0;
+    var totalFiles  = 0;
     var neededFiles = 0;
 
     function setBar(pct) {
@@ -422,7 +463,7 @@
       document.getElementById('status').textContent = 'Downloading ' + parts[parts.length - 1];
       if (totalFiles > 0) setBar(((totalFiles - neededFiles) / totalFiles) * 100);
     }
-    function SetFilesTotal(total)  { totalFiles = total; }
+    function SetFilesTotal(total) { totalFiles = total; }
     function SetFilesNeeded(needed) {
       neededFiles = needed;
       if (totalFiles > 0) {
@@ -432,6 +473,7 @@
         if (needed === 0) setBar(100);
       }
     }
+
     var fakePct = 0;
     var fakeTimer = setInterval(function() {
       fakePct += Math.random() * 2.5;
