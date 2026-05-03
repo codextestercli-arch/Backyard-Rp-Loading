@@ -449,28 +449,35 @@
       play();
     });
 
-    /* ── GMod hooks ── */
+    /* ── GMod hooks — bound to window so CEF can call them ── */
     var totalFiles  = 0;
     var neededFiles = 0;
 
     function setBar(pct) {
       document.getElementById('bar').style.width = Math.min(100, Math.max(0, pct)) + '%';
     }
-    function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gamemode) {
+
+    window.GameDetails = function(serverName, serverURL, mapName, maxPlayers, steamID, gamemode, volume, language) {
       document.getElementById('map-name').textContent    = mapName    || '—';
       document.getElementById('max-players').textContent = maxPlayers ? maxPlayers + ' slots' : '—';
       if (gamemode) document.getElementById('gamemode').textContent = gamemode;
-    }
-    function SetStatusChanged(status) {
+    };
+
+    window.SetStatusChanged = function(status) {
       document.getElementById('status').textContent = status || 'Loading...';
-    }
-    function DownloadingFile(fileName) {
+    };
+
+    window.DownloadingFile = function(fileName) {
       var parts = fileName.split('/');
       document.getElementById('status').textContent = 'Downloading ' + parts[parts.length - 1];
       if (totalFiles > 0) setBar(((totalFiles - neededFiles) / totalFiles) * 100);
-    }
-    function SetFilesTotal(total) { totalFiles = total; }
-    function SetFilesNeeded(needed) {
+    };
+
+    window.SetFilesTotal = function(total) {
+      totalFiles = total;
+    };
+
+    window.SetFilesNeeded = function(needed) {
       neededFiles = needed;
       if (totalFiles > 0) {
         var done = totalFiles - needed;
@@ -478,7 +485,7 @@
         document.getElementById('file-count').textContent = needed > 0 ? done + ' / ' + totalFiles : '';
         if (needed === 0) setBar(100);
       }
-    }
+    };
 
     var fakePct = 0;
     var fakeTimer = setInterval(function() {
