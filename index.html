@@ -267,8 +267,10 @@
     .player-right {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       gap: 10px;
-      flex-shrink: 0;
+      flex: 1;
+      min-width: 0;
     }
     .vol-icon { color: var(--muted); display: flex; align-items: center; }
 
@@ -365,7 +367,7 @@
           <path d="M11 4.5 Q13 7 11 9.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.6"/>
         </svg>
       </span>
-      <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.6">
+      <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.05">
     </div>
   </div>
 
