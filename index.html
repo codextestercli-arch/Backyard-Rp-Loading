@@ -62,20 +62,11 @@
     }
 
     /* Title scales fluidly with viewport, not just width */
-    .server-name {
-      font-family: 'Cormorant Garamond', serif;
-      /* vmin scales relative to the smaller dimension — works in fullscreen AND narrow */
-      font-size: clamp(72px, 16vmin, 160px);
-      font-weight: 300;
-      line-height: 0.88;
-      letter-spacing: -0.02em;
-      color: var(--white);
+    .server-logo {
+      width: clamp(400px, 90vmin, 1000px);
+      height: auto;
       opacity: 0;
       animation: up 1s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;
-    }
-    .server-name .rp {
-      font-style: italic;
-      color: var(--orange-pale);
     }
 
     .tagline {
@@ -83,7 +74,8 @@
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-top: clamp(14px, 2.5vmin, 28px);
+      /* Reduced negative margin to move tagline/status down slightly relative to logo */
+      margin-top: clamp(-40px, -4vmin, -20px);
       opacity: 0;
       animation: up 0.9s ease 0.3s forwards;
     }
@@ -186,10 +178,24 @@
 
     .player-left {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(4px, 0.8vmin, 10px);
       min-width: 0;
       flex: 1;
+    }
+
+    .track-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .volume-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 2px;
     }
 
     .waveform {
@@ -305,7 +311,7 @@
 <body>
 
   <div class="center">
-    <h1 class="server-name">Backyard<br><span class="rp">RP</span></h1>
+    <img src="imgs/ServerLogo.png" alt="Server Logo" class="server-logo">
     <p class="tagline">everyone's welcome</p>
     <div class="rule"></div>
     <div class="status-block">
@@ -327,12 +333,23 @@
   <!-- Music player bar -->
   <div class="player">
     <div class="player-left">
-      <div class="waveform" id="waveform">
-        <span></span><span></span><span></span><span></span><span></span>
+      <div class="track-meta">
+        <div class="waveform" id="waveform">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="track-info">
+          <span class="track-name" id="track-name">Loading...</span>
+          <span class="track-hint">Now Playing</span>
+        </div>
       </div>
-      <div class="track-info">
-        <span class="track-name" id="track-name">Loading...</span>
-        <span class="track-hint">Now Playing</span>
+      <div class="volume-bar">
+        <span class="vol-icon">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <polygon points="1,4 5,4 9,1 9,13 5,10 1,10" fill="currentColor" opacity="0.6"/>
+            <path d="M11 4.5 Q13 7 11 9.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.6"/>
+          </svg>
+        </span>
+        <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.05">
       </div>
     </div>
 
@@ -344,7 +361,7 @@
         </svg>
       </button>
       <button class="ctrl-btn play-btn" id="btn-play" title="Play / Pause">
-        <svg id="icon-play" width="12" height="14" viewBox="0 0 12 14" fill="none">
+        <svg id="icon-play" width="12" height="14" viewBox="0 0 12 14" fill="none" style="transform: translateX(1px);">
           <polygon points="0,0 12,7 0,14" fill="currentColor"/>
         </svg>
         <svg id="icon-pause" width="12" height="14" viewBox="0 0 12 14" fill="none" style="display:none;">
@@ -360,15 +377,7 @@
       </button>
     </div>
 
-    <div class="player-right">
-      <span class="vol-icon">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <polygon points="1,4 5,4 9,1 9,13 5,10 1,10" fill="currentColor" opacity="0.6"/>
-          <path d="M11 4.5 Q13 7 11 9.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </span>
-      <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.01" value="0.05">
-    </div>
+    <div class="player-right"></div>
   </div>
 
   <audio id="audio" preload="auto"></audio>
